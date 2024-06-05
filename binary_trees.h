@@ -2,6 +2,8 @@
 #define _BTS
 
 #include <stdlib.h>
+#include <stdio.h>
+
 typedef struct binary_tree_s
 {
     int n;
