@@ -1,90 +1,32 @@
 #include "binary_trees.h"
-/**
- * check_sub_tree_Left - check if all nodes are smaller than
- * the root specified
- * @node: node in the tree to verify condition
- * @max: value to compare
- * Return: 1 if all nodes are smaller or equal or 0 if not
- */
-int check_sub_tree_Left(const binary_tree_t *node, int max)
-{
-	int left = 0, right = 0;
 
-	if (node == NULL)
-	{
-		return (1);
-	}
-	else
-	{
-		if (node->n >= max)
-			return (0);
-		left = check_sub_tree_Left(node->left, max);
-		right = check_sub_tree_Left(node->right, max);
-		if (left == right && left == 1)
-			return (1);
-		return (0);
-	}
-}
 /**
- * check_sub_tree_Right: checks if all the nodes are bigger than the
- * root specified
- * @node: node in the tree to verify condition
- * @min: value to compare
- * Return: 1 if all is bigger or equal or 0 if not
+ * helper - checks if a binary tree is a valid Binary Search Tree
+ * @tree: a pointer to the root node of the tree to check
+ * @min: Lower bound for the node that being checked.
+ * @max: Upper bound for the node that being checked.
+ *
+ * Return: 1 or 0 if tree is NULL or BST
  */
-int check_sub_tree_Right(const binary_tree_t *node, int min)
+int helper(const binary_tree_t *tree, int min, int max)
 {
-	int left = 0, right = 0;
-
-	if (node == NULL)
-	{
+	if (!tree)
 		return (1);
-	}
-	else
-	{
-		if (node->n <= min)
-			return (0);
-		left = check_sub_tree_Right(node->left, min);
-		right = check_sub_tree_Right(node->right, min);
-		if (left == right && left == 1)
-			return (1);
+	if (tree->n < min || tree->n > max)
 		return (0);
-	}
+	return (helper(tree->left, min, tree->n - 1) &&
+			helper(tree->right, tree->n + 1, max));
 }
+
 /**
- * binary_tree_is_bst: checks if tree and  
- * right node is bigger than root
- * @tree: node that point to the tree to check
- * Return: 1 if it is a BST or 0 if not
+ * binary_tree_is_bst: checks if a binary tree is a valid Binary Search Tree
+ * @tree: a pointer to the root node of the tree to check
+ *
+ * Return: 1 or 0  if tree is a valid BST or not
  */
 int binary_tree_is_bst(const binary_tree_t *tree)
 {
-	int var = 0, left = 2, right = 2;
-
-	if (tree == NULL)
+	if (!tree)
 		return (0);
-	if (tree->left && tree->left->n > tree->n)
-		return (0);
-	if (tree->right && tree->right->n < tree->n)
-		return (0);
-	if (tree->left && tree->left->n < tree->n)
-	{
-		var = check_sub_tree_Left(tree->left, tree->n);
-		if (var == 0)
-			return (0);
-		left = binary_tree_is_bst(tree->left);
-	}
-	if (tree->right && tree->right->n > tree->n)
-	{
-		var = check_sub_tree_Right(tree->right, tree->n);
-		if (var == 0)
-			return (0);
-		right = binary_tree_is_bst(tree->right);
-	}
-	if (left != 2 || right != 2)
-	{
-		if (left == 0 || right == 0)
-			return (0);
-	}
-	return (1);
+	return (helper(tree, INT_MIN, INT_MAX));
 }
